@@ -1,4 +1,5 @@
 import { Box, Button, Heading, Input, Link } from "@chakra-ui/react"
+import pkceChallenge from "pkce-challenge";
 import React, { useState } from "react"
 import { getCodeChallenge } from "./helpers";
 
@@ -11,11 +12,13 @@ export const Profile = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [profile, setProfile] = useState("");
+  const [codeChallenge, setCodeChallenge] = useState("");
+
   const link = 'https://myanimelist.net/v1/oauth2/authorize?'
-  + 'response_type=code'
-  + '&client_id=${configuration.client_id}'
-  + '&code_challenge=${}'
-  + '&state=${}';
+    + 'response_type=code'
+    + `&client_id=${configuration.client_id}`
+    + `&code_challenge=${codeChallenge}`
+    + '&state=RequestID42';
 
   const makeRequest = async () => {
     try {
@@ -47,13 +50,13 @@ export const Profile = () => {
   return (
     <Box>
       <Heading>Auth</Heading>
-      {/* <Input
-        value={profile}
-        onChange={(e) => setProfile(e.target.value)}
-      /> */}
+      <Input
+        value={codeChallenge}
+        onChange={(e) => setCodeChallenge(e.target.value)}
+      />
       <Button
         onClick={() => {
-          getCodeChallenge();
+          setCodeChallenge(getCodeChallenge());
         }}>
         Generate Code Challenge
       </Button>

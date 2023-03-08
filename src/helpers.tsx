@@ -1,16 +1,6 @@
-import { randomBytes } from "crypto";
-
-
-// GENERATING CODE VERIFIER
-const dec2hex = (dec: Number) => {
-  return ("0" + dec.toString(16)).substr(-2);
-}
-
-const generateVerifier = () => {
-  const codeVerifier = randomBytes(128).toString('hex');
-  return codeVerifier;
-}
+import pkceChallenge from 'pkce-challenge';
 
 export const getCodeChallenge = () => {
-  return generateVerifier();
+  const codeChallenge = pkceChallenge(128);
+  return codeChallenge.code_verifier;
 }
