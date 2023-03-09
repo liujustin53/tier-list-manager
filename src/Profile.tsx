@@ -1,6 +1,6 @@
 import { Box, Button, Stack, Heading, Input, Link, Textarea } from "@chakra-ui/react"
 import React, { useState } from "react"
-import { getCodeChallenge } from "./helpers";
+import { getCodeChallenge, getState } from "./helpers";
 
 const configuration = {
   client_id: "9edb52c76f29f5f66fd4917927e44473",
@@ -13,12 +13,9 @@ export const Profile = () => {
   const [profile, setProfile] = useState("");
   const [codeChallenge, setCodeChallenge] = useState("");
   const [authCode, setAuthCode] = useState("");
+  const [state, setState] = useState("");
 
-  const link = 'https://myanimelist.net/v1/oauth2/authorize?'
-    + 'response_type=code'
-    + `&client_id=${configuration.client_id}`
-    + `&code_challenge=${codeChallenge}`
-    + '&state=RequestID42';
+
 
   const authorizeUser = () => {
     fetch('localhost:8000/oauth', {
@@ -45,26 +42,29 @@ export const Profile = () => {
         <Box>
           <Textarea resize='vertical' width='500px' placeholder="Code Challenge"
             value={codeChallenge}
-            onChange={(e) => setCodeChallenge(e.target.value)}
           />
         </Box>
         <Box>
           <Button
             onClick={() => {
               setCodeChallenge(getCodeChallenge());
+              setState(getState());
             }}>
             Generate Code Challenge
           </Button>
         </Box>
         <Link href={link}>
-          <Button>
+          <Button
+          onClick={() => {
+            setAuthCode((''));
+            setState(getState());
+          }}>
             Authorize
           </Button>
         </Link>
         <Box>
           <Textarea resize='vertical' width='500px' placeholder="Auth Code"
             value={authCode}
-            onChange={(e) => setAuthCode(e.target.value)}
           />
         </Box>
         <Box>
