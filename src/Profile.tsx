@@ -1,5 +1,4 @@
-import { Box, Button, Heading, Input, Link } from "@chakra-ui/react"
-import pkceChallenge from "pkce-challenge";
+import { Box, Button, Stack, Heading, Input, Link, Textarea } from "@chakra-ui/react"
 import React, { useState } from "react"
 import { getCodeChallenge } from "./helpers";
 
@@ -13,6 +12,7 @@ export const Profile = () => {
   const [error, setError] = useState("");
   const [profile, setProfile] = useState("");
   const [codeChallenge, setCodeChallenge] = useState("");
+  const [authCode, setAuthCode] = useState("");
 
   const link = 'https://myanimelist.net/v1/oauth2/authorize?'
     + 'response_type=code'
@@ -20,51 +20,59 @@ export const Profile = () => {
     + `&code_challenge=${codeChallenge}`
     + '&state=RequestID42';
 
-  const makeRequest = async () => {
-    try {
-      setLoading(true);
-      setError("");
-      const reqOptions = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        }
-      };
-
-      const response = await fetch('https://myanimelist.net/v1/oauth2/authorize?'
-        + 'response_type=code'
-        + '&client_id=${configuration.client_id}'
-        + '&code_challenge=${}'
-        + '&state=${}',
-        reqOptions);
-      const data = await response.json();
-      console.log(data);
-    } catch (err) {
-      let message;
-      if (err instanceof Error) message = err.message;
-      else message = String(err);
-      setError(message);
-    }
+  const authorizeUser = () => {
+    fetch('localhost:8000/oauth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        code: authCode,
+        code_verifier: codeChallenge
+      })
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        
+    });
   }
 
   return (
     <Box>
       <Heading>Auth</Heading>
-      <Input
-        value={codeChallenge}
-        onChange={(e) => setCodeChallenge(e.target.value)}
-      />
-      <Button
-        onClick={() => {
-          setCodeChallenge(getCodeChallenge());
-        }}>
-        Generate Code Challenge
-      </Button>
-      <Link href={link}>
-        <Button>
-          Authorize
-        </Button>
-      </Link>
+      <Stack direction='column'>
+        <Box>
+          <Textarea resize='vertical' width='500px' placeholder="Code Challenge"
+            value={codeChallenge}
+            onChange={(e) => setCodeChallenge(e.target.value)}
+          />
+        </Box>
+        <Box>
+          <Button
+            onClick={() => {
+              setCodeChallenge(getCodeChallenge());
+            }}>
+            Generate Code Challenge
+          </Button>
+        </Box>
+        <Link href={link}>
+          <Button>
+            Authorize
+          </Button>
+        </Link>
+        <Box>
+          <Textarea resize='vertical' width='500px' placeholder="Auth Code"
+            value={authCode}
+            onChange={(e) => setAuthCode(e.target.value)}
+          />
+        </Box>
+        <Box>
+          <Button>
+            Send Auth Code
+          </Button>
+        </Box>
+      </Stack>
     </Box>
   )
 }
