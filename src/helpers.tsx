@@ -7,7 +7,3 @@ export const getCodeChallenge = () => {
 export const getState = () => {
   return pkceChallenge(64).code_verifier;
 }
-
-// export const = () => {
-  
-// }

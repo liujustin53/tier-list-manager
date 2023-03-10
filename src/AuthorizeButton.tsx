@@ -7,9 +7,10 @@ const configuration = {
   redirect_uri: "http://localhost:8000/oauth/redirect",
 }
 
+const code_challenge = getCodeChallenge();
+const state = getState();
+
 export const AuthorizeButton = () => {
-  const code_challenge = getCodeChallenge();
-  const state = getState();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
@@ -18,7 +19,8 @@ export const AuthorizeButton = () => {
     + 'response_type=code'
     + `&client_id=${configuration.client_id}`
     + `&code_challenge=${code_challenge}`
-    + `&state=${state}`;
+    + `&state=${state}`
+    + `&redirect_uri=${configuration.redirect_uri}`;
 
   const sendCodeChallenge = async () => {
     try {
@@ -29,7 +31,9 @@ export const AuthorizeButton = () => {
           'Content-Type': 'application/json',
         },
       };
-      const response = await fetch(`http://localhost:8000/oauth/challenge?code_challenge=${code_challenge}&state=${state}`,
+      // console.log(code_challenge)
+      // console.log(state)
+      const response = await fetch(`http://localhost:8000/oauth/authorize?code_challenge=${code_challenge}&state=${state}`,
         reqOptions);
       if (response.status !== 200) {
         throw new Error(response.statusText);
@@ -45,18 +49,17 @@ export const AuthorizeButton = () => {
     }
   }
 
-  // useEffect(() => {
-  //   if (!loading && !error && sent) {
-  //     window.location.href = link;
-  //   }
-  // }, [loading, error, sent, link]);
+  useEffect(() => {
+    if (!loading && !error && sent) {
+      window.location.href = link;
+    }
+  }, [loading, error, sent, link]);
 
   return (
     <Center>
       <Stack>
         <Button onClick={() => {
           sendCodeChallenge();
-          window.location.href = link;
         }}
         >
           Authorize
