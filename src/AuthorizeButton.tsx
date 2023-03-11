@@ -62,7 +62,7 @@ export const AuthorizeButton = () => {
           sendCodeChallenge();
         }}
         >
-          Authorize
+          Login
         </Button>
         {loading && (<Text>Loading...</Text>)}
         {error && (<Text>{error}</Text>)}
