@@ -25,16 +25,14 @@ export const AuthorizeButton = () => {
   const sendCodeChallenge = async () => {
     try {
       setLoading(true);
-      const reqOptions = {
+
+      const response = await fetch(`http://localhost:8000/oauth/authorize?code_challenge=${code_challenge}&state=${state}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-      };
-      // console.log(code_challenge)
-      // console.log(state)
-      const response = await fetch(`http://localhost:8000/oauth/authorize?code_challenge=${code_challenge}&state=${state}`,
-        reqOptions);
+        credentials: 'same-origin',
+      });
       if (response.status !== 200) {
         throw new Error(response.statusText);
       }
@@ -58,9 +56,15 @@ export const AuthorizeButton = () => {
   return (
     <Center>
       <Stack>
-        <Button onClick={() => {
-          sendCodeChallenge();
-        }}
+        <Button
+          size="md"
+          fontSize="lg"
+          variant="ghost"
+          color="current"
+          margin="2"
+          onClick={() => {
+            sendCodeChallenge();
+          }}
         >
           Login
         </Button>

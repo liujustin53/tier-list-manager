@@ -1,30 +1,19 @@
-import { Box } from "@chakra-ui/react"
-import React, { useState } from "react"
-import { AuthorizeButton } from "./AuthorizeButton";
-import { LoginInOutButton } from "./LogInOutButton";
+import { Box, Text } from "@chakra-ui/react"
+import React from "react"
+import { isLoggedIn } from "./helpers";
 
 export const AuthPage = () => {
-  const [isLoggedin, setIsLoggedin] = React.useState(false);
 
   React.useEffect(() => {
-    // check for session id cookie
-    const session_cookie = document.cookie.split('; ').find(row => row.startsWith('session_id=')) || '';
-    if (!session_cookie) {
-      return;
-    }
-    const session_id = session_cookie.split('=')[1];
-    if (session_id) {
-      setIsLoggedin(true);
-    }
     // if logged in, redirect to dashboard
-    if (isLoggedin) {
+    if (isLoggedIn()) {
       window.location.href = '/dashboard';
     }
   }, []);
 
   return (
     <Box m={5}>
-      <LoginInOutButton />
+      <Text>Log in to access your tier lists</Text>
     </Box>
   )
 }

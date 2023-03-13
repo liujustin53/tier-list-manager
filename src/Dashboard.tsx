@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@chakra-ui/react"
+import { Box, Button, Center, Flex, Image, ListItem, Text, UnorderedList } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 
 export const Dashboard = () => {
@@ -20,16 +20,18 @@ export const Dashboard = () => {
       const session_cookie = document.cookie.split('; ').find(row => row.startsWith('session_id=')) || '';
       session_id = session_cookie.split('=')[1];
       if (!session_id) {
-        return;
+        // if not found, redirect to the login page
+        window.location.href = '/';
       }
     }
     setSessionID(session_id);
-
   }, []);
 
   const getList = async (type: string) => {
     try {
+      setData([]);
       setLoading(true);
+      setError('');
 
       if (!sessionID) {
         throw new Error('No session id found, please reauthenticate.');
@@ -73,9 +75,16 @@ export const Dashboard = () => {
       </Button>
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
-      {data && data.map((anime: any) => (
-        <Text key={anime.id}>{anime.title}</Text>
-      ))}
+      {data &&
+        <UnorderedList spacing={3}>
+          {data.map((entry: any) => (
+            <Box>
+              <ListItem><Image src={entry.main_picture} alt={entry.animanga_id} /></ListItem>
+              <Text>{entry.score}</Text>
+            </Box>
+          ))}
+        </UnorderedList>
+      }
     </Box>
   )
 }
