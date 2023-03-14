@@ -37,15 +37,14 @@ export const Dashboard = () => {
         throw new Error('No session id found, please reauthenticate.');
       }
 
-      const reqOptions = {
+      const response = await fetch(`http://localhost:8000/api/list?type=${type}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-      };
-
-      const response = await fetch(`http://localhost:8000/api/list?type=${type}&session_id=${sessionID}`, reqOptions);
+        credentials: 'include',
+      });
       if (response.status !== 200) {
         throw new Error(response.statusText);
       }

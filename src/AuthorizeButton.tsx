@@ -11,8 +11,6 @@ const code_challenge = getCodeChallenge();
 const state = getState();
 
 export const AuthorizeButton = () => {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [sent, setSent] = useState(false);
 
   const link = 'https://myanimelist.net/v1/oauth2/authorize?'
@@ -24,34 +22,26 @@ export const AuthorizeButton = () => {
 
   const sendCodeChallenge = async () => {
     try {
-      setLoading(true);
-
       const response = await fetch(`http://localhost:8000/oauth/authorize?code_challenge=${code_challenge}&state=${state}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'same-origin',
       });
       if (response.status !== 200) {
         throw new Error(response.statusText);
       }
       setSent(true);
     } catch (err) {
-      let message;
-      if (err instanceof Error) message = err.message;
-      else message = String(err);
-      setError(message);
-    } finally {
-      setLoading(false);
+      console.error(err);
     }
   }
 
   useEffect(() => {
-    if (!loading && !error && sent) {
+    if (sent) {
       window.location.href = link;
     }
-  }, [loading, error, sent, link]);
+  }, [sent, link]);
 
   return (
     <Center>
@@ -68,8 +58,6 @@ export const AuthorizeButton = () => {
         >
           Login
         </Button>
-        {loading && (<Text>Loading...</Text>)}
-        {error && (<Text>{error}</Text>)}
       </Stack>
     </Center>
   )
