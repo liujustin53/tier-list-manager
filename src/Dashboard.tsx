@@ -1,30 +1,17 @@
-import { Box, Button, Center, Flex, Image, ListItem, Text, UnorderedList } from "@chakra-ui/react"
+import { Box, Button, Image, ListItem, Text, UnorderedList } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
+import { isLoggedIn } from "./helpers";
 
 export const Dashboard = () => {
-  // save the session id from the url as a cookie
-  const [sessionID, setSessionID] = useState("");
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // try getting the session id from the url
-    const urlParams = new URLSearchParams(window.location.search);
-    let session_id = urlParams.get('session_id');
-    if (session_id) {
-      // save the session id as a cookie
-      document.cookie = `session_id=${session_id}`;
-    } else {
-      // if not found, try getting it from the cookie
-      const session_cookie = document.cookie.split('; ').find(row => row.startsWith('session_id=')) || '';
-      session_id = session_cookie.split('=')[1];
-      if (!session_id) {
-        // if not found, redirect to the login page
-        window.location.href = '/';
-      }
+    if (!isLoggedIn()) {
+      // if not found, redirect to the login page
+      window.location.href = '/';
     }
-    setSessionID(session_id);
   }, []);
 
   const getList = async (type: string) => {
@@ -32,10 +19,6 @@ export const Dashboard = () => {
       setData([]);
       setLoading(true);
       setError('');
-
-      if (!sessionID) {
-        throw new Error('No session id found, please reauthenticate.');
-      }
 
       const response = await fetch(`http://localhost:8000/api/list?type=${type}`, {
         method: 'GET',
@@ -51,7 +34,7 @@ export const Dashboard = () => {
 
       const data = await response.json();
       console.log(data);
-      setData(data);
+      setData(data.list);
     } catch (err) {
       let message;
       if (err instanceof Error) message = err.message;
@@ -64,8 +47,6 @@ export const Dashboard = () => {
 
   return (
     <Box m={5}>
-      <Text>Session ID: {sessionID}</Text>
-      <Text>Session cookie: {document.cookie}</Text>
       <Button onClick={() => getList('anime')}>
         Get Anime List
       </Button>

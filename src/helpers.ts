@@ -11,19 +11,7 @@ export const getState = () => {
   return Array.from(nums, (n) => n.toString(16)).join('');
 }
 
-export const getSessionID = () => {
-  // check for session id cookie
-  const session_cookie = document.cookie.split('; ').find(row => row.startsWith('session_id=')) || '';
-  if (!session_cookie) {
-    return '';
-  }
-  const session_id = session_cookie.split('=')[1];
-  if (session_id) {
-    return session_id;
-  }
-  return '';
-}
-
 export const isLoggedIn = () => {
-  return getSessionID() !== '';
+  // check for is_logged_in cookie
+  return document.cookie.includes('is_logged_in=1');
 }
