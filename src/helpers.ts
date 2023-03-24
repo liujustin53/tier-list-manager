@@ -1,5 +1,13 @@
 import pkceChallenge from 'pkce-challenge';
 
+export type ListEntry = {
+  animanga_id: number;
+  main_picture: string;
+  score: number;
+  tier: string;
+  // is_changed: boolean;
+}
+
 export const getCodeChallenge = () => {
   return pkceChallenge(128).code_verifier;
 }

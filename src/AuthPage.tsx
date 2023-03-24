@@ -1,4 +1,4 @@
-import { Box, Text } from "@chakra-ui/react"
+import { Box, Center, Text } from "@chakra-ui/react"
 import React from "react"
 import { isLoggedIn } from "./helpers";
 
@@ -12,8 +12,8 @@ export const AuthPage = () => {
   }, []);
 
   return (
-    <Box m={5}>
+    <Center m={5}>
       <Text>Log in to access your tier lists</Text>
-    </Box>
+    </Center>
   )
 }

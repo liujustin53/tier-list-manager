@@ -16,14 +16,12 @@ function App() {
           <ColorModeSwitcher />
           <LoginInOutButton />
         </Flex>
-        <Center p={5}>
-          <Router>
-            <Routes>
-              <Route path="/" element={<AuthPage />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-            </Routes>
-          </Router>
-        </Center>
+        <Router>
+          <Routes>
+            <Route path="/" element={<AuthPage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Routes>
+        </Router>
       </Box>
     </ChakraProvider>
   );
